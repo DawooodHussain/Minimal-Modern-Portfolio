@@ -29,7 +29,9 @@ import { nav, profile } from '../data/content';
 		<div class="hidden shrink-0 items-center gap-5 sm:flex">
 			{profile.resume && <a href={profile.resume} class="hairline-link font-mono text-label uppercase text-graphite transition-colors hover:text-ink">Resume</a>}
 			<a
-				href={`mailto:${profile.email}`}
+				href={`https://mail.google.com/mail/?view=cm&to=${profile.email}`}
+				target="_blank"
+				rel="noreferrer"
 				class="shrink-0 rounded-ctl border border-ink px-4 py-1.5 font-mono text-label-sm font-bold uppercase transition-colors hover:bg-ink hover:text-paper"
 			>
 				Say hello

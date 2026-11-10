@@ -8,7 +8,7 @@ const card =
 
 // Entries with an empty href (resume, LinkedIn until set) are left out.
 const actions = [
-	{ key: 'Email', label: 'Send an email', href: `mailto:${profile.email}?subject=Project%20inquiry` },
+	{ key: 'Email', label: 'Send an email', href: `https://mail.google.com/mail/?view=cm&to=${profile.email}&su=Project%20inquiry`, external: true },
 	{ key: 'Resume', label: 'View resume', href: profile.resume },
 	{ key: 'GitHub', label: 'View GitHub', href: profile.github, external: true },
 	{ key: 'LinkedIn', label: 'View LinkedIn', href: profile.linkedin, external: true },
@@ -31,7 +31,7 @@ const actions = [
 					<span>Have a project in mind?</span>
 				</div>
 				<!-- Container-sized so the longest word ("SOMETHING", ~10em wide in Syne 800) never overflows narrow phones. -->
-				<a href={`mailto:${profile.email}`} class="@container group block">
+				<a href={`https://mail.google.com/mail/?view=cm&to=${profile.email}`} target="_blank" rel="noreferrer" class="@container group block">
 					<span
 						class="block font-display text-[min(9.5cqi,5.25rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.04em] transition-colors group-hover:text-graphite"
 						data-reveal
