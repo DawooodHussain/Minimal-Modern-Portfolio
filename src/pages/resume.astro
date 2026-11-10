@@ -1,0 +1,139 @@
+---
+import Icon from '../components/Icon.astro';
+import Layout from '../layouts/Layout.astro';
+import { profile, resume } from '../data/content';
+
+const site = Astro.site?.host;
+const contact = [
+	{ label: profile.email, href: `mailto:${profile.email}` },
+	{ label: 'Lahore, Pakistan' },
+	{ label: `github.com/${profile.github.split('/').pop()}`, href: profile.github },
+	profile.linkedin && { label: profile.linkedin.replace(/^https?:\/\/(www\.)?/, ''), href: profile.linkedin },
+	site && { label: site, href: Astro.site?.href },
+].filter(Boolean) as { label: string; href?: string }[];
+---
+
+<Layout title={`Resume — ${resume.fullName}`} description={`Resume of ${resume.fullName}, ${profile.role}.`}>
+	<div class="resume-page min-h-svh bg-fog py-8 print:bg-paper print:py-0">
+		<!-- Screen-only toolbar -->
+		<div class="mx-auto mb-6 flex max-w-[210mm] items-center justify-between px-5 font-mono text-label uppercase print:hidden">
+			<a href="/" class="hairline-link inline-flex items-center gap-1.5 text-graphite hover:text-ink"><Icon name="arrow-left" /> Back to site</a>
+			<button type="button" onclick="window.print()" class="rounded-ctl border border-ink bg-ink px-4 py-2 font-bold text-paper transition-colors hover:bg-paper hover:text-ink">
+				Save as PDF
+			</button>
+		</div>
+
+		<main id="main" class="resume-sheet mx-auto max-w-[210mm] border border-mist bg-paper p-[14mm] print:max-w-none print:border-0">
+			<header class="flex flex-col gap-4 border-b border-ink pb-6 sm:flex-row sm:items-end sm:justify-between">
+				<div>
+					<h1 class="font-display text-[44px] font-extrabold uppercase leading-none tracking-[-0.03em]">{resume.fullName}</h1>
+					<p class="mt-2 font-mono text-label font-bold uppercase">{profile.role}</p>
+				</div>
+				<ul class="space-y-0.5 font-mono text-label-sm sm:text-right">
+					{contact.map((c) => <li>{c.href ? <a href={c.href} class="hover:underline">{c.label}</a> : c.label}</li>)}
+				</ul>
+			</header>
+
+			<section class="resume-block">
+				<h2>Summary</h2>
+				<p class="max-w-[75ch] text-body-sm leading-relaxed">{resume.summary}</p>
+			</section>
+
+			<section class="resume-block">
+				<h2>Experience</h2>
+				{
+					resume.experience.map((x) => (
+						<article class="space-y-1.5">
+							<div class="flex flex-wrap items-baseline justify-between gap-x-4">
+								<h3 class="font-display text-headline-sm font-semibold uppercase">
+									{x.role} · {x.org}
+								</h3>
+								{x.dates && <span class="font-mono text-label-sm uppercase text-graphite">{x.dates}</span>}
+							</div>
+							{x.detail && <p class="font-mono text-label-sm uppercase text-graphite">{x.detail}</p>}
+							<ul class="list-disc space-y-1 pl-4 text-body-sm marker:text-graphite">
+								{x.points.map((p) => <li>{p}</li>)}
+							</ul>
+						</article>
+					))
+				}
+			</section>
+
+			<section class="resume-block">
+				<h2>Education</h2>
+				{
+					resume.education.map((e) => (
+						<div class="flex flex-wrap items-baseline justify-between gap-x-4">
+							<div>
+								<h3 class="font-display text-headline-sm font-semibold uppercase">{e.org}</h3>
+								<p class="font-mono text-label-sm uppercase text-graphite">{e.role}</p>
+							</div>
+							{e.dates && <span class="font-mono text-label-sm uppercase text-graphite">{e.dates}</span>}
+						</div>
+					))
+				}
+			</section>
+
+			<section class="resume-block">
+				<h2>Skills</h2>
+				<dl class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+					{
+						resume.skills.map((s) => (
+							<div>
+								<dt class="font-mono text-label-sm uppercase text-graphite">{s.group}</dt>
+								<dd class="text-body-sm">{s.items.join(', ')}</dd>
+							</div>
+						))
+					}
+				</dl>
+			</section>
+
+			<section class="resume-block grid grid-cols-1 gap-4 sm:grid-cols-2">
+				<div>
+					<h2>Languages</h2>
+					<p class="text-body-sm">{resume.languages}</p>
+				</div>
+				<div>
+					<h2>Interests</h2>
+					<p class="text-body-sm">{resume.interests}</p>
+				</div>
+			</section>
+		</main>
+	</div>
+</Layout>
+
+<style>
+	/* Section titles share one style: mono label over a hairline. */
+	.resume-block {
+		margin-top: 1.5rem;
+	}
+	.resume-block h2 {
+		margin-bottom: 0.75rem;
+		border-bottom: 1px solid var(--mist);
+		padding-bottom: 0.375rem;
+		font-family: var(--font-mono);
+		font-size: var(--text-label);
+		letter-spacing: var(--text-label--letter-spacing);
+		text-transform: uppercase;
+		color: var(--graphite);
+	}
+
+	@page {
+		size: A4;
+		margin: 0;
+	}
+	@media print {
+		:global(html),
+		:global(body) {
+			background: var(--paper);
+			print-color-adjust: exact;
+			-webkit-print-color-adjust: exact;
+		}
+		:global(body > a[href='#main']) {
+			display: none;
+		}
+		.resume-sheet {
+			min-height: 297mm;
+		}
+	}
+</style>

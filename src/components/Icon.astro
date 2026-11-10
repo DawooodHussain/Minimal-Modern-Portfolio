@@ -1,0 +1,29 @@
+---
+// Line icons drawn as SVG so they render identically everywhere. Text glyphs like "──→"
+// break apart in Space Mono. Sized in em to follow the surrounding text; stroke uses currentColor.
+interface Props {
+	name: 'arrow-right' | 'arrow-up-right' | 'arrow-up' | 'arrow-left' | 'copy';
+	class?: string;
+}
+const { name, class: className } = Astro.props;
+
+const paths: Record<Props['name'], string> = {
+	'arrow-right': 'M3 8h10M9 4l4 4-4 4',
+	'arrow-up-right': 'M4.5 11.5l7-7M5.5 4.5h6v6',
+	'arrow-up': 'M8 13V3M4 7l4-4 4 4',
+	'arrow-left': 'M13 8H3M7 4L3 8l4 4',
+	copy: 'M5.5 5.5V3h7.5v7.5h-2.5M3 5.5h7.5V13H3z',
+};
+---
+
+<svg
+	class:list={['inline-block h-[1.1em] w-[1.1em] shrink-0', className]}
+	viewBox="0 0 16 16"
+	fill="none"
+	stroke="currentColor"
+	stroke-width="1.5"
+	stroke-linecap="square"
+	stroke-linejoin="miter"
+	aria-hidden="true"
+	focusable="false"><path d={paths[name]}></path></svg
+>

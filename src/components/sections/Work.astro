@@ -1,0 +1,62 @@
+---
+import Icon from '../Icon.astro';
+import SectionRail from '../SectionRail.astro';
+import { projects } from '../../data/content';
+---
+
+<section id="work" data-section="work" data-invert class="border-b border-mist">
+	<div class="mx-auto grid max-w-[1440px] grid-cols-1 lg:grid-cols-12">
+		<SectionRail eyebrow="Selected work" title="Featured projects" note="Recent web apps, services & interfaces">
+			<span slot="footer">{projects.length} highlighted projects</span>
+		</SectionRail>
+
+		<div class="min-w-0 divide-y divide-mist lg:col-span-9">
+			<div class="flex flex-col justify-between gap-2 p-5 font-mono text-label uppercase text-graphite sm:flex-row sm:px-8 md:px-10">
+				<span>Featured case studies &amp; commercial work</span>
+				<span class="text-ink">Production deployments</span>
+			</div>
+
+			<ol>
+				{
+					projects.map((p, i) => {
+						// Rows without a case-study URL render as plain blocks, not dead links.
+						const Row = p.href ? 'a' : 'div';
+						return (
+						<li class="border-t border-mist first:border-t-0">
+							<Row
+								href={p.href || undefined}
+								class:list={['group block p-5 sm:p-8 md:p-10', p.href && 'transition-colors duration-150 hover:bg-fog focus-visible:bg-fog']}
+							>
+								<div class="flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+									<div class="space-y-2 lg:max-w-xl">
+										<div class="flex flex-wrap items-center gap-3 font-mono text-label-sm uppercase text-graphite">
+											<span class="font-bold text-ink">Project {String(i + 1).padStart(2, '0')}</span>
+											<span>·</span>
+											<span>{p.stack.join(' · ')}</span>
+										</div>
+										<h3
+											class:list={['font-display text-[clamp(1.25rem,2.4vw,1.75rem)] font-semibold uppercase leading-tight', p.href && 'transition-transform duration-200 group-hover:translate-x-2']}
+										>
+											{p.title}
+										</h3>
+										<p class="max-w-[60ch] text-graphite">{p.body}</p>
+									</div>
+									<div class="flex flex-col items-start gap-2 font-mono text-label-sm uppercase text-graphite lg:items-end">
+										<span class="font-bold text-ink">Role: {p.role}</span>
+										{p.outcome && <span>Outcome: {p.outcome}</span>}
+										{p.href && (
+											<span class="mt-1 inline-flex items-center gap-2 rounded-ctl border border-mist px-3 py-1.5 text-ink transition-colors group-hover:border-ink">
+												View case study <Icon name="arrow-right" class="arrow" />
+											</span>
+										)}
+									</div>
+								</div>
+							</Row>
+						</li>
+						);
+					})
+				}
+			</ol>
+		</div>
+	</div>
+</section>

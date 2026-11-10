@@ -1,0 +1,297 @@
+@import 'tailwindcss';
+
+@import '@fontsource/syne/600.css';
+@import '@fontsource/syne/700.css';
+@import '@fontsource/syne/800.css';
+@import '@fontsource/manrope/400.css';
+@import '@fontsource/manrope/500.css';
+@import '@fontsource/space-mono/400.css';
+@import '@fontsource/space-mono/700.css';
+
+/*
+ * Monochrome Atelier tokens.
+ * Primitive values live on :root; [data-invert] swaps them so every
+ * utility (bg-paper, text-ink, border-mist...) flips without per-section hex.
+ */
+:root {
+	--paper: #fafafa;
+	--ink: #0a0a0a;
+	--graphite: #6b6b6b;
+	--mist: #e4e4e1;
+	--fog: #f1f1ef;
+	--pure: #000000;
+}
+
+[data-invert] {
+	--paper: #0a0a0a;
+	--ink: #fafafa;
+	--graphite: #a3a3a3;
+	--mist: #2a2a2a;
+	--fog: #161616;
+	--pure: #ffffff;
+	background-color: var(--paper);
+	color: var(--ink);
+}
+
+@theme inline {
+	--color-paper: var(--paper);
+	--color-ink: var(--ink);
+	--color-graphite: var(--graphite);
+	--color-mist: var(--mist);
+	--color-fog: var(--fog);
+	--color-pure: var(--pure);
+
+	--font-display: 'Syne', ui-sans-serif, sans-serif;
+	--font-body: 'Manrope', ui-sans-serif, sans-serif;
+	--font-mono: 'Space Mono', ui-monospace, monospace;
+
+	--radius-ctl: 2px;
+	--spacing-margin: 4rem;
+}
+
+@theme {
+	--text-display-xl: 112px;
+	--text-display-xl--line-height: 100px;
+	--text-display-xl--letter-spacing: -0.04em;
+	--text-display-lg: 64px;
+	--text-display-lg--line-height: 68px;
+	--text-display-lg--letter-spacing: -0.03em;
+	--text-headline-lg: 40px;
+	--text-headline-lg--line-height: 44px;
+	--text-headline-lg--letter-spacing: -0.02em;
+	--text-headline-md: 28px;
+	--text-headline-md--line-height: 34px;
+	--text-headline-md--letter-spacing: -0.01em;
+	--text-headline-sm: 20px;
+	--text-headline-sm--line-height: 26px;
+	--text-body-lead: 19px;
+	--text-body-lead--line-height: 30px;
+	--text-body-lead--letter-spacing: -0.01em;
+	--text-body: 15px;
+	--text-body--line-height: 24px;
+	--text-body--letter-spacing: -0.005em;
+	--text-body-sm: 13px;
+	--text-body-sm--line-height: 20px;
+	--text-label: 12px;
+	--text-label--line-height: 16px;
+	--text-label--letter-spacing: 0.08em;
+	--text-label-sm: 10px;
+	--text-label-sm--line-height: 14px;
+	--text-label-sm--letter-spacing: 0.1em;
+}
+
+@layer base {
+	html {
+		background-color: var(--paper);
+	}
+	body {
+		@apply bg-paper text-ink font-body text-body antialiased;
+		overscroll-behavior: none;
+	}
+	button:not(:disabled) {
+		cursor: pointer;
+	}
+	::selection {
+		background: var(--ink);
+		color: var(--paper);
+	}
+	:focus-visible {
+		outline: 2px solid var(--pure);
+		outline-offset: 2px;
+	}
+	/*
+	 * Clear what's pinned on anchor jumps: the fixed header (64px) everywhere,
+	 * plus the status strip (31px) on desktop, where it's sticky too.
+	 */
+	[data-section] {
+		scroll-margin-top: 64px;
+	}
+	@media (min-width: 64rem) {
+		[data-section] {
+			scroll-margin-top: 95px;
+		}
+	}
+	/* Sections receive programmatic focus on nav clicks; they aren't controls. */
+	[data-section]:focus,
+	#main:focus {
+		outline: none;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		html {
+			scroll-behavior: smooth;
+		}
+	}
+}
+
+@layer components {
+	/* Hairline that grows from the left — editorial link + nav active state. */
+	.hairline-link {
+		position: relative;
+	}
+	.hairline-link::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -2px;
+		height: 1px;
+		background: currentColor;
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	.hairline-link:hover::after,
+	.hairline-link[aria-current='true']::after {
+		transform: scaleX(1);
+	}
+
+	/* Arrow glyph nudges 4px right on hover, per the button spec. */
+	.arrow {
+		display: inline-block;
+		transition: transform 200ms cubic-bezier(0.2, 0.7, 0.2, 1);
+	}
+	.group:hover .arrow,
+	.group:focus-visible .arrow {
+		transform: translateX(4px);
+	}
+
+	/* Square live indicator (no rounded dots — radius is 0 system-wide). */
+	.live-mark {
+		display: inline-block;
+		flex-shrink: 0;
+		width: 8px;
+		height: 8px;
+		background: currentColor;
+	}
+
+	/*
+	 * Hero name: letters rise out of a mask, then one monochrome glitch.
+	 * Two clipped copies of the word (::before graphite fill, ::after ink
+	 * outline) slide on their own slices. Plays once, CSS only.
+	 */
+	.glitch {
+		position: relative;
+		display: inline-block;
+	}
+	/*
+	 * Copies are painted from the first frame but clipped to nothing, rather than
+	 * opacity: 0. Appearing later would register as a new Largest Contentful Paint
+	 * at the glitch time (~1.2s) instead of at first paint.
+	 */
+	.glitch::before,
+	.glitch::after {
+		content: attr(data-text);
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		clip-path: inset(50% 0 50% 0);
+	}
+	.glitch::before {
+		color: var(--graphite);
+	}
+	.glitch::after {
+		color: transparent;
+		-webkit-text-stroke: 1px var(--ink);
+	}
+	.hero-char {
+		display: inline-block;
+		overflow: hidden;
+		vertical-align: top;
+		/* Slack so the mask doesn't shave glyph overshoot at leading 0.85. */
+		padding-block: 0.06em;
+		margin-block: -0.06em;
+	}
+	.hero-char > span {
+		display: inline-block;
+	}
+	/* Hidden unless a scroll timeline drives it (below). */
+	.scroll-progress {
+		transform: scaleX(0);
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.hero-char > span {
+			animation: char-rise 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+			animation-delay: calc(100ms + var(--i) * 60ms);
+		}
+		.glitch {
+			animation: glitch-jolt 380ms steps(3, end) 1.1s;
+		}
+		.glitch::before {
+			animation: glitch-a 380ms steps(2, end) 1.1s;
+		}
+		.glitch::after {
+			animation: glitch-b 380ms steps(2, end) 1.1s;
+		}
+
+		/* Header hairline tracks page scroll; stays hidden where unsupported. */
+		@supports (animation-timeline: scroll()) {
+			.scroll-progress {
+				animation: grow-x linear both;
+				animation-timeline: scroll(root);
+			}
+		}
+	}
+
+	/*
+	 * One-shot scroll reveals. .motion is set pre-paint by Layout.astro (only
+	 * without reduced motion); page.ts adds .is-in once an element is in view.
+	 */
+	.motion [data-reveal],
+	.motion [data-reveal-group] > * {
+		opacity: 0;
+		transform: translateY(16px);
+		transition:
+			opacity 700ms cubic-bezier(0.2, 0.7, 0.2, 1),
+			transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+		transition-delay: calc(var(--i, 0) * 60ms);
+	}
+	.motion [data-reveal].is-in,
+	.motion [data-reveal-group].is-in > * {
+		opacity: 1;
+		transform: none;
+	}
+	/* Manifesto: words brighten in sequence, once. */
+	/* Starts at 0.45, not lower: still ≥3:1 contrast for large text before the reveal. */
+	.motion [data-reveal-words] .scrub-word {
+		opacity: 0.45;
+		transition: opacity 500ms linear;
+		transition-delay: calc(var(--i, 0) * 45ms);
+	}
+	.motion [data-reveal-words].is-in .scrub-word {
+		opacity: 1;
+	}
+	/* Already scrolled past on load (e.g. shared #link): show without animating. */
+	.motion .is-instant,
+	.motion .is-instant > *,
+	.motion .is-instant .scrub-word {
+		transition: none !important;
+	}
+}
+
+@keyframes char-rise {
+	from { transform: translateY(110%); }
+}
+@keyframes grow-x {
+	from { transform: scaleX(0); }
+	to { transform: scaleX(1); }
+}
+@keyframes glitch-a {
+	0% { clip-path: inset(10% 0 70% 0); transform: translate(-6px, 0); }
+	25% { clip-path: inset(60% 0 15% 0); transform: translate(5px, 0); }
+	50% { clip-path: inset(35% 0 45% 0); transform: translate(-3px, 0); }
+	75% { clip-path: inset(80% 0 5% 0); transform: translate(7px, 0); }
+	100% { clip-path: inset(0 0 100% 0); transform: translate(0, 0); }
+}
+@keyframes glitch-b {
+	0% { clip-path: inset(70% 0 10% 0); transform: translate(6px, 0); }
+	25% { clip-path: inset(20% 0 60% 0); transform: translate(-7px, 0); }
+	50% { clip-path: inset(50% 0 30% 0); transform: translate(4px, 0); }
+	75% { clip-path: inset(5% 0 85% 0); transform: translate(-5px, 0); }
+	100% { clip-path: inset(100% 0 0 0); transform: translate(0, 0); }
+}
+@keyframes glitch-jolt {
+	0%, 100% { transform: translate(0, 0) skewX(0); }
+	33% { transform: translate(2px, 0) skewX(-4deg); }
+	66% { transform: translate(-2px, 0) skewX(3deg); }
+}

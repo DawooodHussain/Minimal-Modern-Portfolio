@@ -1,0 +1,61 @@
+---
+import SectionRail from '../SectionRail.astro';
+import { capabilities, toolkit } from '../../data/content';
+
+const quote =
+	'“Software should be fast, easy to use, and rock-solid under the hood. I bridge reliable backend systems with polished, delightful interfaces.”';
+// Words are pre-split so they can brighten in sequence once (see .scrub in global.css).
+const words = quote.split(' ');
+---
+
+<section id="services" data-section="services" class="border-b border-mist">
+	<div class="mx-auto grid max-w-[1440px] grid-cols-1 lg:grid-cols-12">
+		<SectionRail eyebrow="Services & focus" title="What I do" note="From interface to API to database">
+			<span slot="footer">Philosophy: make it simple, then make it fast</span>
+		</SectionRail>
+
+		<div class="space-y-12 p-5 sm:p-8 md:p-12 lg:col-span-9 lg:p-16">
+			<!-- Words brighten in sequence the first time the quote scrolls into view. -->
+			<blockquote
+				data-reveal-words class="scrub border-l-2 border-ink pl-5 font-display text-[clamp(1.5rem,3.2vw,2.5rem)] font-semibold uppercase leading-[1.1] tracking-tight sm:pl-10"
+			>
+				{
+					words.map((w, i) => (
+						<Fragment>
+							<span class="scrub-word" style={`--i:${i}`}>{w}</span>
+							{i < words.length - 1 && ' '}
+						</Fragment>
+					))
+				}
+			</blockquote>
+
+			<div class="grid grid-cols-1 gap-8 border-t border-mist pt-8 md:grid-cols-3" data-reveal-group>
+				{
+					capabilities.map((c) => (
+						<article class="space-y-3">
+							<header class="flex items-center justify-between border-b border-mist pb-2 font-mono text-label font-bold uppercase">
+								<span>{c.title}</span>
+								<span class="text-graphite">// {c.tag}</span>
+							</header>
+							<p class="text-graphite">{c.body}</p>
+							<p class="border border-mist bg-fog p-2 font-mono text-label-sm uppercase">Tools: {c.tools.join(' · ')}</p>
+						</article>
+					))
+				}
+			</div>
+
+			<div class="space-y-4 border-t border-mist pt-8">
+				<h3 class="font-mono text-label-sm uppercase tracking-widest text-graphite">Technologies &amp; toolkit</h3>
+				<ul class="flex flex-wrap gap-2" data-reveal-group>
+					{
+						toolkit.map((t) => (
+							<li class="border border-mist px-3 py-1 font-mono text-label uppercase transition-colors duration-150 hover:border-ink hover:bg-fog">
+								{t}
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>

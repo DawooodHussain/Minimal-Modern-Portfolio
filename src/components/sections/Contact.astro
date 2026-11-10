@@ -1,0 +1,90 @@
+---
+import Icon from '../Icon.astro';
+import SectionRail from '../SectionRail.astro';
+import { profile } from '../../data/content';
+
+const card =
+	'group flex h-full w-full flex-col justify-between gap-3 rounded-ctl border border-mist bg-paper p-4 text-left font-mono text-label uppercase transition-colors duration-150 hover:border-ink hover:bg-ink hover:text-paper';
+
+// Entries with an empty href (resume, LinkedIn until set) are left out.
+const actions = [
+	{ key: 'Email', label: 'Send an email', href: `mailto:${profile.email}?subject=Project%20inquiry` },
+	{ key: 'Resume', label: 'View resume', href: profile.resume },
+	{ key: 'GitHub', label: 'View GitHub', href: profile.github, external: true },
+	{ key: 'LinkedIn', label: 'View LinkedIn', href: profile.linkedin, external: true },
+].filter((a) => a.href);
+---
+
+<section id="contact" data-section="contact" data-invert class="border-b border-mist">
+	<div class="mx-auto grid max-w-[1440px] grid-cols-1 lg:min-h-[70vh] lg:grid-cols-12">
+		<SectionRail eyebrow="Contact" title="Let's connect" note="New projects, collaborations, or just hello">
+			<div slot="footer" class="space-y-2">
+				<div>Response time: &lt; 24 hours</div>
+				<div class="font-bold text-ink">Status: open to freelance work</div>
+			</div>
+		</SectionRail>
+
+		<div class="flex flex-col justify-between gap-12 p-5 sm:p-8 md:p-12 lg:col-span-9 lg:p-16">
+			<div class="space-y-6">
+				<div class="flex items-center gap-3 font-mono text-label uppercase tracking-widest text-graphite">
+					<span class="live-mark text-ink"></span>
+					<span>Have a project in mind?</span>
+				</div>
+				<!-- Container-sized so the longest word ("SOMETHING", ~10em wide in Syne 800) never overflows narrow phones. -->
+				<a href={`mailto:${profile.email}`} class="@container group block">
+					<span
+						class="block font-display text-[min(9.5cqi,5.25rem)] font-extrabold uppercase leading-[0.9] tracking-[-0.04em] transition-colors group-hover:text-graphite"
+						data-reveal
+					>
+						Let's build something great
+					</span>
+					<span class="mt-5 flex items-center gap-3 font-mono text-label uppercase tracking-widest text-graphite transition-colors group-hover:text-ink md:text-headline-sm">
+						<span class="normal-case">{profile.email}</span><Icon name="arrow-right" class="arrow" />
+					</span>
+				</a>
+			</div>
+
+			<div class="space-y-6 border border-mist bg-fog p-5 sm:p-6">
+				<div class="flex flex-col justify-between gap-2 border-b border-mist pb-4 font-mono text-label-sm uppercase text-graphite sm:flex-row sm:items-center">
+					<span class="font-bold text-ink">Quick actions</span>
+					<span>Inquiries &amp; links</span>
+				</div>
+				<ul class="grid grid-cols-1 gap-3 sm:grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]" data-reveal-group>
+					{
+						actions.map((a) => (
+							<li>
+								<a
+									href={a.href}
+									download={a.download || undefined}
+									target={a.external ? '_blank' : undefined}
+									rel={a.external ? 'noreferrer' : undefined}
+									class={card}
+								>
+									<span class="text-label-sm text-graphite group-hover:text-paper/70">{a.key}</span>
+									<span class="flex items-center justify-between font-bold">
+										<span>{a.label}</span>
+										<Icon name={a.external ? 'arrow-up-right' : 'arrow-right'} class="arrow" />
+									</span>
+								</a>
+							</li>
+						))
+					}
+					<!-- mailto: does nothing without a configured mail app, so offer copying too (handled in page.ts). -->
+					<li>
+						<button type="button" class={card} data-copy={profile.email}>
+							<span class="text-label-sm text-graphite group-hover:text-paper/70">Email address</span>
+							<span class="flex items-center justify-between font-bold">
+								<span data-copy-label aria-live="polite">Copy email</span>
+								<Icon name="copy" class="arrow" />
+							</span>
+						</button>
+					</li>
+				</ul>
+				<div class="flex flex-col justify-between gap-4 border-t border-mist pt-4 font-mono text-label-sm uppercase text-graphite md:flex-row md:items-center">
+					<span>Based in Lahore, Pakistan · Available worldwide</span>
+					<span class="text-ink">{profile.name} — {profile.role}</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

@@ -1,0 +1,68 @@
+---
+import Icon from '../Icon.astro';
+import SectionRail from '../SectionRail.astro';
+import { about, facts, offTheClock, profile } from '../../data/content';
+---
+
+<section id="about" data-section="about" class="border-b border-mist">
+	<div class="mx-auto grid max-w-[1440px] grid-cols-1 lg:grid-cols-12">
+		<SectionRail eyebrow="About me" title="Background & bio" note={`Java developer · ${profile.company}`}>
+			<span slot="footer">Location: {profile.location}</span>
+		</SectionRail>
+
+		<div class="space-y-16 p-5 sm:p-8 md:p-12 lg:col-span-9 lg:p-16">
+			<div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
+				<div class="space-y-6 lg:col-span-7">
+					<h2 class="font-display text-[clamp(1.5rem,3.2vw,2.5rem)] font-semibold uppercase leading-[1.1] tracking-tight" data-reveal>
+						{about.headline}
+					</h2>
+					<div class="max-w-[60ch] space-y-4" data-reveal>
+						<p class="text-body-lead font-medium">{about.lead}</p>
+						<p class="text-graphite">{about.body}</p>
+					</div>
+				</div>
+
+				<div class="border-t border-mist pt-6 lg:col-span-5 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
+					<dl class="divide-y divide-mist border-y border-mist font-mono text-label-sm uppercase" data-reveal-group>
+						{
+							facts.map((f) => (
+								<div class="flex flex-col gap-1 py-4">
+									<dt class="text-graphite">{f.label}</dt>
+									<dd class="text-label font-bold">{f.value}</dd>
+								</div>
+							))
+						}
+					</dl>
+				</div>
+			</div>
+
+			<div class="space-y-6 border-t border-mist pt-10">
+				<h3 class="font-mono text-label uppercase text-graphite">Off the clock</h3>
+				<ul class="grid grid-cols-1 gap-px border border-mist bg-mist sm:grid-cols-2 lg:grid-cols-4" data-reveal-group>
+					{
+						offTheClock.map((item) => {
+							const Card = item.href ? 'a' : 'div';
+							return (
+								<li class="bg-paper">
+									<Card
+										href={item.href || undefined}
+										target={item.href ? '_blank' : undefined}
+										rel={item.href ? 'noreferrer' : undefined}
+										class:list={['group flex h-full flex-col gap-2 p-5 sm:p-6', item.href && 'transition-colors duration-150 hover:bg-fog']}
+									>
+										<span class="flex items-center justify-between font-mono text-label-sm uppercase text-graphite">
+											{item.label}
+											{item.href && <Icon name="arrow-up-right" class="arrow" />}
+										</span>
+										<span class="font-display text-headline-sm font-semibold uppercase">{item.title}</span>
+										<span class="text-body-sm text-graphite">{item.note}</span>
+									</Card>
+								</li>
+							);
+						})
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>

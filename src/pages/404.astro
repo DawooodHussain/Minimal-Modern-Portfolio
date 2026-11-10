@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { profile } from '../data/content';
+---
+
+<!--
+	Any unknown path is served this page (with a 404 status, so search engines don't index it),
+	and visitors are sent straight to the home page. The meta refresh works without JS;
+	location.replace keeps the bad URL out of the back-button history.
+-->
+<Layout title={`Redirecting — ${profile.name}`} description="This page doesn't exist." noindex>
+	<meta slot="head" http-equiv="refresh" content="0; url=/" />
+	<script is:inline slot="head">
+		location.replace('/');
+	</script>
+	<main id="main" class="mx-auto flex min-h-svh max-w-[1440px] items-center p-5 sm:p-8 md:p-margin">
+		<p class="font-mono text-label uppercase tracking-widest text-graphite">
+			Page not found. <a href="/" class="hairline-link font-bold text-ink">Go to the home page</a>
+		</p>
+	</main>
+</Layout>

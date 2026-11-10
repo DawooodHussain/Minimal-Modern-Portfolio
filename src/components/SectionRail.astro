@@ -1,0 +1,18 @@
+---
+// Left metadata column shared by every section (cols 1–3 on desktop).
+interface Props {
+	eyebrow: string;
+	title: string;
+	note?: string;
+}
+const { eyebrow, title, note } = Astro.props;
+---
+
+<aside class="flex flex-col justify-between gap-6 border-b border-mist p-5 font-mono text-label-sm uppercase text-graphite sm:p-8 lg:col-span-3 lg:border-r lg:border-b-0">
+	<div>
+		<span class="text-label font-bold text-ink">{eyebrow}</span>
+		<h2 class="mt-4 font-bold tracking-wider text-ink">{title}</h2>
+		{note && <p class="mt-2">{note}</p>}
+	</div>
+	<div class="hidden lg:block"><slot name="footer" /></div>
+</aside>
